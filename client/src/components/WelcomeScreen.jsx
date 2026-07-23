@@ -49,6 +49,9 @@ export const WelcomeScreen = () => {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    // Lock body scroll while splash screen is showing
+    document.body.style.overflow = 'hidden';
+
     const steps = TOTAL_DURATION / TICK_INTERVAL; // 100 steps
     const increment = 100 / steps;               // ~1% per step
     let current = 0;
@@ -62,11 +65,17 @@ export const WelcomeScreen = () => {
         clearInterval(interval);
         setDone(true);
         // Small pause at 100% so user can see it, then close
-        setTimeout(() => setShowWelcome(false), 300);
+        setTimeout(() => {
+          setShowWelcome(false);
+          document.body.style.overflow = '';
+        }, 300);
       }
     }, TICK_INTERVAL);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      document.body.style.overflow = '';
+    };
   }, []);
 
   return (
@@ -76,11 +85,18 @@ export const WelcomeScreen = () => {
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.04, filter: 'blur(10px)', transition: { duration: 0.4, ease: 'easeInOut' } }}
-          // Full screen, flex column, perfect center
+          // Full screen, flex column, perfect center across all mobile devices
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 99999,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            maxHeight: '-webkit-fill-available',
+            zIndex: 999999,
             background: '#FCE8EE',
             display: 'flex',
             flexDirection: 'column',
@@ -88,6 +104,7 @@ export const WelcomeScreen = () => {
             justifyContent: 'center',
             overflow: 'hidden',
             userSelect: 'none',
+            touchAction: 'none',
           }}
         >
           {/* ── Background SVGs ── */}

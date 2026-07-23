@@ -108,7 +108,7 @@ export const CartDrawer = ({ onCheckoutClick }) => {
   return (
     <AnimatePresence>
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className="fixed inset-0 z-[99999] overflow-hidden">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -125,7 +125,7 @@ export const CartDrawer = ({ onCheckoutClick }) => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="w-full sm:w-screen max-w-md bg-[#FDF9F6] shadow-2xl flex flex-col justify-between h-full"
+              className="w-full sm:w-screen max-w-md bg-[#FDF9F6] shadow-2xl flex flex-col justify-between h-full relative z-10"
             >
               {/* Drawer Header */}
               <div className="p-4 sm:p-6 bg-white border-b border-[#7A3B4E]/10 flex items-center justify-between flex-shrink-0">
@@ -164,7 +164,7 @@ export const CartDrawer = ({ onCheckoutClick }) => {
                 </div>
               </div>
 
-              {/* Cart Items List — only scroll when items exceed view, no unnecessary scrollbar */}
+              {/* Cart Items List */}
               <div className={`flex-1 p-4 sm:p-6 space-y-4 ${cart.length === 0 ? 'flex items-center justify-center overflow-hidden' : 'overflow-y-auto'}`}>
                 {cart.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center text-[#8E8E93]">
@@ -179,58 +179,65 @@ export const CartDrawer = ({ onCheckoutClick }) => {
                     </button>
                   </div>
                 ) : (
-                  cart.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="flex gap-3.5 p-3 sm:p-3.5 bg-white rounded-2xl border border-[#7A3B4E]/10 shadow-sm"
-                    >
-                      <img
-                        src={item.image}
-                        alt={item.title}
-                        className="w-16 sm:w-20 h-16 sm:h-20 object-cover rounded-xl border border-[#F4A7B9]/20 bg-[#FDF9F6] flex-shrink-0"
-                      />
-                      <div className="flex-1 flex flex-col justify-between min-w-0">
-                        <div>
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-serif font-semibold text-xs sm:text-sm text-[#1C1C1E] truncate pr-1">
-                              {item.title}
-                            </h4>
-                            <button
-                              onClick={() => removeFromCart(idx)}
-                              className="text-gray-400 hover:text-red-500 p-1 flex-shrink-0"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                          {item.selectedColor && (
-                            <p className="text-[10px] text-[#7A3B4E] font-medium">Shade: {item.selectedColor}</p>
-                          )}
-                        </div>
+                  cart.map((item, idx) => {
+                    if (!item) return null;
+                    const itemImg = item.image || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop';
+                    const itemPrice = Number(item.price) || 0;
+                    const itemQty = Number(item.quantity) || 1;
 
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50">
-                            <button
-                              onClick={() => updateQuantity(idx, -1)}
-                              className="p-1 hover:bg-gray-200 text-gray-600 rounded-l-lg"
-                            >
-                              <Minus className="w-3 h-3" />
-                            </button>
-                            <span className="px-2.5 text-xs font-bold text-[#1C1C1E]">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(idx, 1)}
-                              className="p-1 hover:bg-gray-200 text-gray-600 rounded-r-lg"
-                            >
-                              <Plus className="w-3 h-3" />
-                            </button>
+                    return (
+                      <div
+                        key={idx}
+                        className="flex gap-3.5 p-3 sm:p-3.5 bg-white rounded-2xl border border-[#7A3B4E]/10 shadow-sm"
+                      >
+                        <img
+                          src={itemImg}
+                          alt={item.title || 'Product'}
+                          className="w-16 sm:w-20 h-16 sm:h-20 object-cover rounded-xl border border-[#F4A7B9]/20 bg-[#FDF9F6] flex-shrink-0"
+                        />
+                        <div className="flex-1 flex flex-col justify-between min-w-0">
+                          <div>
+                            <div className="flex justify-between items-start">
+                              <h4 className="font-serif font-semibold text-xs sm:text-sm text-[#1C1C1E] truncate pr-1">
+                                {item.title}
+                              </h4>
+                              <button
+                                onClick={() => removeFromCart(idx)}
+                                className="text-gray-400 hover:text-red-500 p-1 flex-shrink-0"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            {item.selectedColor && (
+                              <p className="text-[10px] text-[#7A3B4E] font-medium">Shade: {item.selectedColor}</p>
+                            )}
                           </div>
 
-                          <span className="font-serif font-bold text-xs sm:text-sm text-[#7A3B4E]">
-                            {formatPrice(item.price * item.quantity)}
-                          </span>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50">
+                              <button
+                                onClick={() => updateQuantity(idx, -1)}
+                                className="p-1 hover:bg-gray-200 text-gray-600 rounded-l-lg"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="px-2.5 text-xs font-bold text-[#1C1C1E]">{itemQty}</span>
+                              <button
+                                onClick={() => updateQuantity(idx, 1)}
+                                className="p-1 hover:bg-gray-200 text-gray-600 rounded-r-lg"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
+
+                            <span className="font-serif font-bold text-xs sm:text-sm text-[#7A3B4E]">
+                              {formatPrice(itemPrice * itemQty)}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
 

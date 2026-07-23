@@ -68,7 +68,9 @@ export const ShopProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     try {
       const saved = localStorage.getItem('bwc_cart');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed.filter(item => item && item.title) : [];
     } catch (e) {
       return [];
     }
@@ -77,7 +79,9 @@ export const ShopProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState(() => {
     try {
       const saved = localStorage.getItem('bwc_wishlist');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return Array.isArray(parsed) ? parsed.filter(item => item && item.title) : [];
     } catch (e) {
       return [];
     }
@@ -180,11 +184,12 @@ export const ShopProvider = ({ children }) => {
   };
 
   const formatPrice = (usdAmount) => {
+    const validNum = Number(usdAmount) || 0;
     if (currency === 'PKR') {
-      const pkrVal = Math.round(usdAmount * USD_TO_PKR);
+      const pkrVal = Math.round(validNum * USD_TO_PKR);
       return `Rs. ${pkrVal.toLocaleString()}`;
     }
-    return `$${usdAmount.toLocaleString()}`;
+    return `$${validNum.toLocaleString()}`;
   };
 
   const showToast = (msg) => {
@@ -195,21 +200,25 @@ export const ShopProvider = ({ children }) => {
   };
 
   const addToCart = (product, quantity = 1, selectedColor = '', selectedMaterial = '') => {
+    if (!product || !product.title) return;
+    const priceVal = Number(product.discountPrice || product.price) || 0;
+    const imgVal = product.images?.[0] || product.image || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop';
+    
     setCart(prev => {
-      const existingIndex = prev.findIndex(item => item._id === product._id && item.selectedColor === selectedColor);
+      const existingIndex = prev.findIndex(item => item && item._id === (product._id || product.slug) && item.selectedColor === selectedColor);
       if (existingIndex > -1) {
         const updated = [...prev];
-        updated[existingIndex].quantity += quantity;
+        updated[existingIndex].quantity = (updated[existingIndex].quantity || 1) + quantity;
         return updated;
       }
       return [...prev, {
         _id: product._id || product.slug,
         title: product.title,
-        price: product.discountPrice || product.price,
-        image: product.images?.[0] || '',
-        quantity,
-        selectedColor,
-        selectedMaterial
+        price: priceVal,
+        image: imgVal,
+        quantity: Math.max(1, quantity),
+        selectedColor: selectedColor || '',
+        selectedMaterial: selectedMaterial || ''
       }];
     });
     showToast(`Added "${product.title}" to Bag!`);
@@ -220,7 +229,7 @@ export const ShopProvider = ({ children }) => {
       if (typeof idOrIndex === 'number') {
         return prev.filter((_, i) => i !== idOrIndex);
       }
-      return prev.filter(item => !((item._id === idOrIndex || item.slug === idOrIndex) && (selectedColor ? item.selectedColor === selectedColor : true)));
+      return prev.filter(item => item && !((item._id === idOrIndex || item.slug === idOrIndex) && (selectedColor ? item.selectedColor === selectedColor : true)));
     });
     showToast('Removed item from Bag.');
   };
@@ -232,10 +241,10 @@ export const ShopProvider = ({ children }) => {
       if (typeof idOrIndex === 'number') {
         targetIndex = idOrIndex;
       } else {
-        targetIndex = updated.findIndex(item => (item._id === idOrIndex || item.slug === idOrIndex) && (selectedColor ? item.selectedColor === selectedColor : true));
+        targetIndex = updated.findIndex(item => item && (item._id === idOrIndex || item.slug === idOrIndex) && (selectedColor ? item.selectedColor === selectedColor : true));
       }
       if (targetIndex === -1 || targetIndex >= updated.length) return prev;
-      const newQty = updated[targetIndex].quantity + delta;
+      const newQty = (updated[targetIndex].quantity || 1) + delta;
       if (newQty <= 0) {
         return updated.filter((_, i) => i !== targetIndex);
       }
@@ -247,9 +256,10 @@ export const ShopProvider = ({ children }) => {
   const clearCart = () => setCart([]);
 
   const toggleWishlist = (product) => {
-    const isWishlisted = wishlist.some(item => item._id === product._id || item.slug === product.slug);
+    if (!product) return;
+    const isWishlisted = wishlist.some(item => item && (item._id === product._id || item.slug === product.slug));
     if (isWishlisted) {
-      setWishlist(prev => prev.filter(item => item._id !== product._id && item.slug !== product.slug));
+      setWishlist(prev => prev.filter(item => item && item._id !== product._id && item.slug !== product.slug));
       showToast(`Removed from Wishlist.`);
     } else {
       setWishlist(prev => [...prev, product]);
@@ -257,8 +267,14 @@ export const ShopProvider = ({ children }) => {
     }
   };
 
-  const cartTotalUSD = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const discountAmountUSD = appliedCoupon ? (appliedCoupon.discountType === 'percentage' ? (cartTotalUSD * appliedCoupon.discountAmount) / 100 : appliedCoupon.discountAmount) : 0;
+  const cartTotalUSD = cart.reduce((acc, item) => {
+    if (!item) return acc;
+    const itemPrice = Number(item.price) || 0;
+    const itemQty = Number(item.quantity) || 1;
+    return acc + (itemPrice * itemQty);
+  }, 0);
+
+  const discountAmountUSD = appliedCoupon ? (appliedCoupon.discountType === 'percentage' ? (cartTotalUSD * appliedCoupon.discountAmount) / 100 : Number(appliedCoupon.discountAmount) || 0) : 0;
   const finalTotalUSD = Math.max(0, cartTotalUSD - discountAmountUSD);
 
   const loginUser = (userData) => {

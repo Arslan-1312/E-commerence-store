@@ -563,11 +563,10 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
               {products.filter(p => p.isNewArrival).slice(0, 4).map((product, i) => (
                 <motion.div
                   key={product._id || product.slug}
-                  initial={{ opacity: 0, y: 40, rotateX: 15, z: -50 }}
-                  whileInView={{ opacity: 1, y: 0, rotateX: 0, z: 0 }}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ transformStyle: 'preserve-3d', perspective: 800 }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
                 >
                   <ProductCard product={product} onSelect={onSelectProduct} />
                 </motion.div>
