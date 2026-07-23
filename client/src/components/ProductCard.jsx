@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Heart, Eye, ShoppingBag, Star, Sparkles } from 'lucide-react';
+import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 export const ProductCard = ({ product, onSelect }) => {
@@ -90,9 +90,9 @@ export const ProductCard = ({ product, onSelect }) => {
               initial={{ x: -30, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 300, delay: 0.1 }}
-              className="px-3 py-1 bg-gradient-to-r from-[#F4A7B9] to-[#E07898] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-md flex items-center gap-1"
+              className="px-3 py-1 bg-gradient-to-r from-[#F4A7B9] to-[#E07898] text-white text-[10px] font-bold uppercase tracking-wider rounded-full shadow-md"
             >
-              <Sparkles className="w-2.5 h-2.5" /> New
+              New Arrival
             </motion.span>
           )}
           <span className="px-3 py-1 bg-[#7A3B4E] text-white text-[10px] font-semibold uppercase tracking-wider rounded-full shadow-md">

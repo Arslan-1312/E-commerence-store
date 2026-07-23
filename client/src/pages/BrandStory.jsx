@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Award, Heart, ShieldCheck } from 'lucide-react';
+import { Crown, Award, Heart, ShieldCheck } from 'lucide-react';
 
 export const BrandStory = ({ setActiveTab }) => {
   return (

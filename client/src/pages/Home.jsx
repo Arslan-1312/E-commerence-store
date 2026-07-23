@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue, useInView } from 'framer-motion';
-import { ArrowRight, ArrowLeft, Star, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Star, Crown } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { useShop } from '../context/ShopContext';
 
@@ -226,7 +226,7 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
   const buildHeroSlides = () => {
     const productSlides = products.slice(0, 6).map(p => ({
       image: p.images?.[0] || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1400&auto=format&fit=crop',
-      badge: p.isNewArrival ? '✦ New Arrival' : p.isBestSeller ? '✦ Bestseller' : p.isFeatured ? '✦ Featured' : '✦ Collection',
+      badge: p.isNewArrival ? 'New Arrival' : p.isBestSeller ? 'Bestseller' : p.isFeatured ? 'Featured' : 'Collection',
       title: p.title,
       description: p.description?.slice(0, 60) + '...',
       price: formatPrice(p.discountPrice || p.price),
@@ -234,12 +234,11 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
       tab: p.category === 'Handmade Bags' ? 'bags' : p.category === 'Limited Edition Sets' ? 'limited' : 'jewelry',
     }));
 
-    // If no products yet, use static fallback
     if (productSlides.length === 0) {
       return [
         {
           image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1400&auto=format&fit=crop',
-          badge: '✦ New Arrival — Kundan',
+          badge: 'New Arrival — Kundan',
           title: 'Gul-e-Rana Kundan Set',
           description: '24K Gold-plated with real freshwater pearls...',
           price: 'Rs. 5,600',
@@ -333,7 +332,7 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#F4A7B9]/30 text-[#7A3B4E] border border-[#F4A7B9] text-[11px] font-semibold tracking-widest uppercase"
             >
-              <Sparkles className="w-3 h-3" />
+              <Crown className="w-3 h-3" />
               Haute Couture Handcrafted Masterpieces
             </motion.div>
 
@@ -545,7 +544,7 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
                   viewport={{ once: true }}
                   className="text-xs uppercase tracking-[0.2em] font-bold text-[#7A3B4E] flex items-center gap-2"
                 >
-                  <Sparkles className="w-3 h-3" /> Latest Arrivals — Newest First
+                  <Crown className="w-3 h-3" /> Latest Arrivals — Newest First
                 </motion.span>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1C1C1E]">Just Arrived</h2>
               </div>

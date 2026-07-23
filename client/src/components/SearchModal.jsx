@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, ArrowRight, Sparkles } from 'lucide-react';
+import { Search, X, ArrowRight, Crown } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 export const SearchModal = ({ onSelectProduct }) => {
