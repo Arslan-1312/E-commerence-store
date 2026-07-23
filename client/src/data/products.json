@@ -1,0 +1,107 @@
+[
+  {
+    "_id": "bwc-001",
+    "title": "Gul-e-Rana Royal Kundan & Pearl Necklace Set",
+    "slug": "gul-e-rana-kundan-pearl-necklace-set",
+    "category": "Handmade Jewelry",
+    "subcategory": "Necklaces",
+    "price": 380,
+    "discountPrice": 320,
+    "sku": "BWC-JWL-001",
+    "stock": 8,
+    "images": [
+      "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=1200&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1611591475165-da028a385750?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "materials": ["24K Gold Plated Brass", "Natural Freshwater Pearls", "Hand-set Kundan Glass Stones"],
+    "colors": [
+      { "name": "Royal Gold & Ivory", "hex": "#D4AF37" }
+    ],
+    "description": "An ethereal handmade necklace set inspired by Mughal royal heritage. Featuring intricate hand-strung freshwater pearls and precision-set Kundan stones crafted by master Pakistani artisans.",
+    "craftDetails": "Over 48 hours of manual wire-weaving, pearl threading, and gold foil setting by 3rd-generation jewel craft artisans.",
+    "rating": 4.9,
+    "numReviews": 24,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestSeller": true,
+    "inStock": true
+  },
+  {
+    "_id": "bwc-002",
+    "title": "Shahzadi Emerald & Polki Drop Earrings",
+    "slug": "shahzadi-emerald-polki-drop-earrings",
+    "category": "Handmade Jewelry",
+    "subcategory": "Earrings",
+    "price": 190,
+    "discountPrice": 165,
+    "sku": "BWC-JWL-002",
+    "stock": 12,
+    "images": [
+      "https://images.unsplash.com/photo-1630019852942-f89202989a59?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "materials": ["24K Gold Polish", "Emerald Hydro Crystals", "Faux Polki Diamonds"],
+    "colors": [
+      { "name": "Deep Emerald & Gold", "hex": "#1A4314" }
+    ],
+    "description": "Chandelier statement earrings delicately handcrafted with dangling hydro emerald drops and hand-cut Polki detailing.",
+    "craftDetails": "Hand-bent filigree framework finished with anti-tarnish micro gold lacquering.",
+    "rating": 4.8,
+    "numReviews": 18,
+    "isFeatured": true,
+    "isNewArrival": false,
+    "isBestSeller": true,
+    "inStock": true
+  },
+  {
+    "_id": "bwc-003",
+    "title": "Royal Zardozi Velvet Bridal Potli Bag",
+    "slug": "royal-zardozi-velvet-bridal-potli-bag",
+    "category": "Handmade Bags",
+    "subcategory": "Potli Bags",
+    "price": 280,
+    "discountPrice": 240,
+    "sku": "BWC-BAG-001",
+    "stock": 6,
+    "images": [
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "materials": ["Pure Italian Silk Velvet", "Gold Metallic Dabka Wire", "Raw Silk Lining"],
+    "colors": [
+      { "name": "Deep Maroon Crimson", "hex": "#7A3B4E" }
+    ],
+    "description": "A regal handmade drawstring potli bag meticulously embroidered with traditional Zardozi bullion wire, pearl tassels, and heavy gold braided handles.",
+    "craftDetails": "60+ hours of hand embroidery on stretched wooden frames by master Zardozi artisans in Lahore.",
+    "rating": 5.0,
+    "numReviews": 15,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestSeller": true,
+    "inStock": true
+  },
+  {
+    "_id": "bwc-004",
+    "title": "Mughalai Silk Embroidered Envelope Clutch",
+    "slug": "mughalai-silk-embroidered-envelope-clutch",
+    "category": "Handmade Bags",
+    "subcategory": "Clutches",
+    "price": 220,
+    "discountPrice": 195,
+    "sku": "BWC-BAG-002",
+    "stock": 9,
+    "images": [
+      "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?q=80&w=1200&auto=format&fit=crop"
+    ],
+    "materials": ["Raw Banarsi Silk", "Antique Metallic Thread", "Satin Interior"],
+    "colors": [
+      { "name": "Emerald & Gold Lattice", "hex": "#0F380F" }
+    ],
+    "description": "Hand-stitched Banarsi silk clutch with magnetic clasp closure and detachable antique gold chain strap.",
+    "craftDetails": "Intricate floral lattice motif hand-sewn with Tilla and Dabka wire.",
+    "rating": 4.9,
+    "numReviews": 11,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestSeller": false,
+    "inStock": true
+  }
+]
