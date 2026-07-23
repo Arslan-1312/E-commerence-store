@@ -114,6 +114,36 @@ const SectionReveal = ({ children, delay = 0 }) => {
   );
 };
 
+// Jewelry SVG Background Motifs
+const JewelryBackgroundMotifs = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-15">
+    {/* Royal Kundan Mandala SVG - Top Right */}
+    <svg className="absolute -top-24 -right-24 w-96 h-96 text-[#7A3B4E] animate-spin-slow" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.7">
+      <circle cx="100" cy="100" r="90" strokeDasharray="3 3" />
+      <circle cx="100" cy="100" r="70" />
+      <circle cx="100" cy="100" r="50" strokeDasharray="6 6" />
+      {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(deg => (
+        <g key={deg} transform={`rotate(${deg} 100 100)`}>
+          <path d="M100 12 L106 28 L100 38 L94 28 Z" fill="#7A3B4E" fillOpacity="0.25" />
+          <circle cx="100" cy="46" r="3.5" fill="#7A3B4E" />
+        </g>
+      ))}
+    </svg>
+
+    {/* Necklace Silhouette SVG - Bottom Left */}
+    <svg className="absolute -bottom-20 -left-20 w-80 h-80 text-[#7A3B4E]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.8">
+      <path d="M 30,50 Q 100,160 170,50" strokeDasharray="4 4" />
+      <path d="M 45,65 Q 100,150 155,65" />
+      {[60, 80, 100, 120, 140].map((x, i) => (
+        <g key={i} transform={`translate(${x - 100}, 0)`}>
+          <circle cx="100" cy="115" r="4" fill="#F4A7B9" />
+          <path d="M100 119 L103 130 L100 136 L97 130 Z" fill="#7A3B4E" />
+        </g>
+      ))}
+    </svg>
+  </div>
+);
+
 export const Home = ({ setActiveTab, onSelectProduct }) => {
   const { products, formatPrice } = useShop();
   const heroRef = useRef(null);
@@ -200,6 +230,9 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
 
       {/* ── 3D Cinematic Hero ── */}
       <section ref={heroRef} className="relative min-h-[82vh] sm:min-h-[88vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-12 pt-6 sm:pt-8">
+
+        {/* Royal Jewelry Background SVG Motifs */}
+        <JewelryBackgroundMotifs />
 
         {/* Ambient 3D Orbs */}
         <FloatingOrb

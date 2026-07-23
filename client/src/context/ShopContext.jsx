@@ -215,17 +215,31 @@ export const ShopProvider = ({ children }) => {
     showToast(`Added "${product.title}" to Bag!`);
   };
 
-  const removeFromCart = (index) => {
-    setCart(prev => prev.filter((_, i) => i !== index));
+  const removeFromCart = (idOrIndex, selectedColor = '') => {
+    setCart(prev => {
+      if (typeof idOrIndex === 'number') {
+        return prev.filter((_, i) => i !== idOrIndex);
+      }
+      return prev.filter(item => !((item._id === idOrIndex || item.slug === idOrIndex) && (selectedColor ? item.selectedColor === selectedColor : true)));
+    });
     showToast('Removed item from Bag.');
   };
 
-  const updateQuantity = (index, delta) => {
+  const updateQuantity = (idOrIndex, delta, selectedColor = '') => {
     setCart(prev => {
       const updated = [...prev];
-      const newQty = updated[index].quantity + delta;
-      if (newQty <= 0) return prev.filter((_, i) => i !== index);
-      updated[index].quantity = newQty;
+      let targetIndex = -1;
+      if (typeof idOrIndex === 'number') {
+        targetIndex = idOrIndex;
+      } else {
+        targetIndex = updated.findIndex(item => (item._id === idOrIndex || item.slug === idOrIndex) && (selectedColor ? item.selectedColor === selectedColor : true));
+      }
+      if (targetIndex === -1 || targetIndex >= updated.length) return prev;
+      const newQty = updated[targetIndex].quantity + delta;
+      if (newQty <= 0) {
+        return updated.filter((_, i) => i !== targetIndex);
+      }
+      updated[targetIndex].quantity = newQty;
       return updated;
     });
   };

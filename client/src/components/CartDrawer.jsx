@@ -184,7 +184,7 @@ export const CartDrawer = ({ onCheckoutClick }) => {
                               {item.title}
                             </h4>
                             <button
-                              onClick={() => removeFromCart(item._id, item.selectedColor)}
+                              onClick={() => removeFromCart(idx)}
                               className="text-gray-400 hover:text-red-500 p-1 flex-shrink-0"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -198,14 +198,14 @@ export const CartDrawer = ({ onCheckoutClick }) => {
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50">
                             <button
-                              onClick={() => updateQuantity(item._id, item.selectedColor, -1)}
+                              onClick={() => updateQuantity(idx, -1)}
                               className="p-1 hover:bg-gray-200 text-gray-600 rounded-l-lg"
                             >
                               <Minus className="w-3 h-3" />
                             </button>
                             <span className="px-2.5 text-xs font-bold text-[#1C1C1E]">{item.quantity}</span>
                             <button
-                              onClick={() => updateQuantity(item._id, item.selectedColor, 1)}
+                              onClick={() => updateQuantity(idx, 1)}
                               className="p-1 hover:bg-gray-200 text-gray-600 rounded-r-lg"
                             >
                               <Plus className="w-3 h-3" />
