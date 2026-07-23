@@ -114,33 +114,87 @@ const SectionReveal = ({ children, delay = 0 }) => {
   );
 };
 
-// Jewelry SVG Background Motifs
-const JewelryBackgroundMotifs = () => (
-  <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-15">
-    {/* Royal Kundan Mandala SVG - Top Right */}
-    <svg className="absolute -top-24 -right-24 w-96 h-96 text-[#7A3B4E] animate-spin-slow" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.7">
-      <circle cx="100" cy="100" r="90" strokeDasharray="3 3" />
-      <circle cx="100" cy="100" r="70" />
-      <circle cx="100" cy="100" r="50" strokeDasharray="6 6" />
-      {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(deg => (
-        <g key={deg} transform={`rotate(${deg} 100 100)`}>
-          <path d="M100 12 L106 28 L100 38 L94 28 Z" fill="#7A3B4E" fillOpacity="0.25" />
-          <circle cx="100" cy="46" r="3.5" fill="#7A3B4E" />
-        </g>
-      ))}
-    </svg>
+// Detailed Earrings SVG (Jhumka / Chandelier Drop Earrings)
+const EarringsSVG = ({ className = "w-44 h-44 text-[#7A3B4E]" }) => (
+  <svg className={className} viewBox="0 0 100 120" fill="none" stroke="currentColor" strokeWidth="1.2">
+    <circle cx="50" cy="20" r="8" fill="#7A3B4E" fillOpacity="0.2" />
+    <circle cx="50" cy="20" r="4" fill="#F4A7B9" />
+    {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => (
+      <circle key={i} cx={50 + 10 * Math.cos((deg * Math.PI) / 180)} cy={20 + 10 * Math.sin((deg * Math.PI) / 180)} r="1.8" fill="#7A3B4E" />
+    ))}
+    <line x1="50" y1="28" x2="50" y2="40" strokeDasharray="2 2" />
+    <circle cx="50" cy="40" r="2.5" fill="#F4A7B9" />
+    <path d="M 30,55 Q 50,38 70,55 Q 72,70 50,72 Q 28,70 30,55 Z" fill="#7A3B4E" fillOpacity="0.15" strokeWidth="1.5" />
+    <path d="M 35,55 Q 50,42 65,55" strokeDasharray="3 3" />
+    <line x1="30" y1="72" x2="70" y2="72" strokeWidth="1.5" />
+    {[32, 38, 44, 50, 56, 62, 68].map((x, i) => (
+      <g key={i}>
+        <line x1={x} y1="72" x2={x} y2={83 + (i % 2 === 0 ? 4 : 0)} />
+        <circle cx={x} cy={86 + (i % 2 === 0 ? 4 : 0)} r="2.5" fill="#F4A7B9" />
+      </g>
+    ))}
+  </svg>
+);
 
-    {/* Necklace Silhouette SVG - Bottom Left */}
-    <svg className="absolute -bottom-20 -left-20 w-80 h-80 text-[#7A3B4E]" viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="0.8">
-      <path d="M 30,50 Q 100,160 170,50" strokeDasharray="4 4" />
-      <path d="M 45,65 Q 100,150 155,65" />
-      {[60, 80, 100, 120, 140].map((x, i) => (
-        <g key={i} transform={`translate(${x - 100}, 0)`}>
-          <circle cx="100" cy="115" r="4" fill="#F4A7B9" />
-          <path d="M100 119 L103 130 L100 136 L97 130 Z" fill="#7A3B4E" />
+// Detailed Bracelet / Bangle SVG (Kundan Gemstone Bangle)
+const BraceletSVG = ({ className = "w-52 h-52 text-[#7A3B4E]" }) => (
+  <svg className={className} viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.2">
+    <circle cx="60" cy="60" r="50" strokeWidth="2" />
+    <circle cx="60" cy="60" r="42" strokeWidth="1.5" strokeDasharray="4 3" />
+    <circle cx="60" cy="60" r="34" strokeWidth="2" />
+    {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg, i) => {
+      const rad = (deg * Math.PI) / 180;
+      const x1 = 60 + 46 * Math.cos(rad);
+      const y1 = 60 + 46 * Math.sin(rad);
+      return (
+        <g key={i}>
+          <circle cx={x1} cy={y1} r="3" fill={i % 2 === 0 ? "#7A3B4E" : "#F4A7B9"} />
         </g>
-      ))}
-    </svg>
+      );
+    })}
+    <circle cx="60" cy="60" r="18" fill="#7A3B4E" fillOpacity="0.1" />
+    <path d="M 50,64 L 48,54 L 54,58 L 60,50 L 66,58 L 72,54 L 70,64 Z" fill="#7A3B4E" />
+  </svg>
+);
+
+// Jewelry SVG Background Motifs (Earrings & Bracelets)
+const JewelryBackgroundMotifs = () => (
+  <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 opacity-20">
+    {/* Floating Kundan Bracelet SVG - Top Right */}
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+      className="absolute -top-16 -right-16"
+    >
+      <BraceletSVG className="w-80 h-80 text-[#7A3B4E]" />
+    </motion.div>
+
+    {/* Floating Earrings SVG - Top Left */}
+    <motion.div
+      animate={{ y: [0, -12, 0], rotate: [-5, 5, -5] }}
+      transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      className="absolute top-10 left-6 sm:left-12"
+    >
+      <EarringsSVG className="w-48 h-48 text-[#7A3B4E]" />
+    </motion.div>
+
+    {/* Floating Earrings SVG - Bottom Right */}
+    <motion.div
+      animate={{ y: [0, 12, 0], rotate: [5, -5, 5] }}
+      transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+      className="absolute bottom-12 right-8 sm:right-16"
+    >
+      <EarringsSVG className="w-48 h-48 text-[#7A3B4E]" />
+    </motion.div>
+
+    {/* Floating Kundan Bracelet SVG - Bottom Left */}
+    <motion.div
+      animate={{ rotate: -360 }}
+      transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
+      className="absolute -bottom-20 -left-20"
+    >
+      <BraceletSVG className="w-80 h-80 text-[#7A3B4E]" />
+    </motion.div>
   </div>
 );
 
