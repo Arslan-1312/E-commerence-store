@@ -449,38 +449,20 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
               {/* 3D Glossy overlay on image */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent pointer-events-none" />
 
-              {/* Slide Indicator Dots */}
+              {/* Slide Indicator Pills — inside card, top center */}
               <div className="absolute top-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
                 {HERO_SLIDES.map((_, i) => (
                   <motion.button
                     key={i}
                     onClick={() => goToSlide(i)}
                     animate={{ width: i === slideIndex ? 24 : 6, opacity: i === slideIndex ? 1 : 0.5 }}
-                    className={`h-1.5 rounded-full bg-white shadow-md`}
+                    className="h-1.5 rounded-full bg-white shadow-md"
                     transition={{ duration: 0.3 }}
                   />
                 ))}
               </div>
 
-              {/* Prev/Next Arrows */}
-              <motion.button
-                whileHover={{ scale: 1.1, x: -2 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={prevSlide}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg text-[#7A3B4E] transition-colors backdrop-blur-sm"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1, x: 2 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={nextSlide}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-white/90 hover:bg-white rounded-full flex items-center justify-center shadow-lg text-[#7A3B4E] transition-colors backdrop-blur-sm"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </motion.button>
-
-              {/* Animated Product Info Tag */}
+              {/* Animated Product Info Tag — inside card, bottom */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={slideIndex + '-tag'}
@@ -517,6 +499,27 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
                 </motion.div>
               </AnimatePresence>
             </TiltCard>
+
+            {/* ── PREV / NEXT ARROWS — Outside TiltCard so overflow-hidden doesn't clip them ── */}
+            <motion.button
+              whileHover={{ scale: 1.12, x: -3, boxShadow: '0 8px 24px rgba(122,59,78,0.4)' }}
+              whileTap={{ scale: 0.93 }}
+              onClick={prevSlide}
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-30 w-11 h-11 bg-white hover:bg-[#F4A7B9] rounded-full flex items-center justify-center shadow-xl text-[#7A3B4E] hover:text-white transition-all duration-200 border border-[#F4A7B9]/40"
+              style={{ boxShadow: '0 4px 20px rgba(122,59,78,0.25)' }}
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.12, x: 3, boxShadow: '0 8px 24px rgba(122,59,78,0.4)' }}
+              whileTap={{ scale: 0.93 }}
+              onClick={nextSlide}
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-30 w-11 h-11 bg-white hover:bg-[#7A3B4E] rounded-full flex items-center justify-center shadow-xl text-[#7A3B4E] hover:text-white transition-all duration-200 border border-[#7A3B4E]/20"
+              style={{ boxShadow: '0 4px 20px rgba(122,59,78,0.25)' }}
+            >
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
 
             {/* Slide counter */}
             <div className="absolute -bottom-6 right-4 text-xs font-mono font-bold text-[#7A3B4E]/60">

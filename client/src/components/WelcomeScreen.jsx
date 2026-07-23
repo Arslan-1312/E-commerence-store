@@ -5,16 +5,11 @@ import Logo from './Logo';
 // ── Modern Chandelier Earring SVG ──────────────────────────────────────────
 const ModernEarringSVG = ({ className = "w-48 h-48 text-[#7A3B4E]" }) => (
   <svg className={className} viewBox="0 0 100 120" fill="none" stroke="currentColor" strokeWidth="1.2">
-    {/* Top Diamond Stud */}
     <polygon points="50,10 57,18 50,26 43,18" fill="#7A3B4E" fillOpacity="0.3" />
     <circle cx="50" cy="18" r="2.5" fill="#F4A7B9" />
-    
-    {/* Geometric Tier Drop */}
     <line x1="50" y1="26" x2="50" y2="38" strokeDasharray="2 2" />
     <path d="M 32,45 L 68,45 L 50,68 Z" fill="#7A3B4E" fillOpacity="0.15" strokeWidth="1.5" />
     <circle cx="50" cy="52" r="4" fill="#F4A7B9" />
-    
-    {/* Hanging Chandelier Droplets */}
     {[34, 42, 50, 58, 66].map((x, i) => (
       <g key={i}>
         <line x1={x} y1="68" x2={x} y2={82 + (i === 2 ? 6 : 0)} />
@@ -27,11 +22,8 @@ const ModernEarringSVG = ({ className = "w-48 h-48 text-[#7A3B4E]" }) => (
 // ── Modern Luxury Cuff Bracelet SVG ────────────────────────────────────────
 const ModernCuffBraceletSVG = ({ className = "w-64 h-64 text-[#7A3B4E]" }) => (
   <svg className={className} viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="1.2">
-    {/* Oval Modern Cuff Band */}
     <ellipse cx="60" cy="60" rx="48" ry="38" strokeWidth="2.5" strokeDasharray="95 10" />
     <ellipse cx="60" cy="60" rx="42" ry="32" strokeWidth="1" strokeDasharray="3 3" />
-    
-    {/* Gemstone Bezel Studs along Cuff */}
     {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
       const rad = (deg * Math.PI) / 180;
       const x = 60 + 45 * Math.cos(rad);
@@ -43,37 +35,38 @@ const ModernCuffBraceletSVG = ({ className = "w-64 h-64 text-[#7A3B4E]" }) => (
         </g>
       );
     })}
-
-    {/* Center Modern Diamond Crown Emblem */}
     <polygon points="60,44 68,54 60,68 52,54" fill="#7A3B4E" fillOpacity="0.2" strokeWidth="1.5" />
     <circle cx="60" cy="56" r="3" fill="#F4A7B9" />
   </svg>
 );
 
+const TOTAL_DURATION = 2000; // 2 seconds exactly
+const TICK_INTERVAL = 20;    // tick every 20ms for smooth progress
+
 export const WelcomeScreen = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // 2.0 second smooth progress counter 0% -> 100%
+    const steps = TOTAL_DURATION / TICK_INTERVAL; // 100 steps
+    const increment = 100 / steps;               // ~1% per step
+    let current = 0;
+
     const interval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 90);
+      current += increment;
+      const val = Math.min(Math.round(current), 100);
+      setProgress(val);
 
-    const timer = setTimeout(() => {
-      setShowWelcome(false);
-    }, 2000);
+      if (val >= 100) {
+        clearInterval(interval);
+        setDone(true);
+        // Small pause at 100% so user can see it, then close
+        setTimeout(() => setShowWelcome(false), 300);
+      }
+    }, TICK_INTERVAL);
 
-    return () => {
-      clearInterval(interval);
-      clearTimeout(timer);
-    };
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -82,96 +75,155 @@ export const WelcomeScreen = () => {
         <motion.div
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.05, filter: 'blur(8px)', transition: { duration: 0.45, ease: 'easeInOut' } }}
-          className="fixed inset-0 z-[99999] bg-[#FCE8EE] flex flex-col items-center justify-center text-center select-none overflow-hidden"
+          exit={{ opacity: 0, scale: 1.04, filter: 'blur(10px)', transition: { duration: 0.4, ease: 'easeInOut' } }}
+          // Full screen, flex column, perfect center
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            background: '#FCE8EE',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            userSelect: 'none',
+          }}
         >
-          {/* Background SVGs — Featuring Modern Bracelets & Earrings in Center & Corners */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-25">
-            {/* Center Background: Modern Cuff Bracelet SVG + Earring in Center */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-30">
+          {/* ── Background SVGs ── */}
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden', opacity: 0.25 }}>
+            {/* Center giant rotating bracelet */}
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.3 }}>
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                className="relative flex items-center justify-center"
               >
                 <ModernCuffBraceletSVG className="w-[480px] h-[480px] text-[#7A3B4E]" />
               </motion.div>
             </div>
-
-            {/* Top Left: Modern Earring SVG */}
+            {/* Top-left earring */}
             <motion.div
               animate={{ y: [0, -10, 0], rotate: [-4, 4, -4] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-8 left-8 sm:top-12 sm:left-16"
+              style={{ position: 'absolute', top: 32, left: 32 }}
             >
-              <ModernEarringSVG className="w-40 h-40 sm:w-52 sm:h-52 text-[#7A3B4E]" />
+              <ModernEarringSVG className="w-44 h-44 text-[#7A3B4E]" />
             </motion.div>
-
-            {/* Top Right: Modern Bracelet SVG */}
+            {/* Top-right bracelet */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
-              className="absolute -top-10 -right-10 sm:-top-16 sm:-right-16"
+              style={{ position: 'absolute', top: -40, right: -40 }}
             >
-              <ModernCuffBraceletSVG className="w-56 h-56 sm:w-72 sm:h-72 text-[#7A3B4E]" />
+              <ModernCuffBraceletSVG className="w-64 h-64 text-[#7A3B4E]" />
             </motion.div>
-
-            {/* Bottom Left: Modern Cuff Bracelet SVG */}
+            {/* Bottom-left bracelet */}
             <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              className="absolute -bottom-16 -left-16 sm:-bottom-20 sm:-left-20"
+              style={{ position: 'absolute', bottom: -48, left: -48 }}
             >
-              <ModernCuffBraceletSVG className="w-60 h-60 sm:w-80 sm:h-80 text-[#7A3B4E]" />
+              <ModernCuffBraceletSVG className="w-72 h-72 text-[#7A3B4E]" />
             </motion.div>
-
-            {/* Bottom Right: Modern Earring SVG */}
+            {/* Bottom-right earring */}
             <motion.div
               animate={{ y: [0, 10, 0], rotate: [4, -4, 4] }}
               transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute bottom-8 right-8 sm:bottom-12 sm:right-16"
+              style={{ position: 'absolute', bottom: 32, right: 32 }}
             >
-              <ModernEarringSVG className="w-40 h-40 sm:w-52 sm:h-52 text-[#7A3B4E]" />
+              <ModernEarringSVG className="w-44 h-44 text-[#7A3B4E]" />
             </motion.div>
           </div>
 
-          {/* Centered Welcome Container — Perfectly Centered */}
+          {/* ── CENTER CONTENT — Logo + Bar + Text ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 15 }}
+            initial={{ opacity: 0, scale: 0.92, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="flex flex-col items-center justify-center gap-6 relative z-10 w-full max-w-sm px-4"
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              position: 'relative',
+              zIndex: 10,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '24px',
+              textAlign: 'center',
+              width: '100%',
+            }}
           >
-            {/* Logo Container */}
-            <div className="w-[270px] flex justify-center items-center">
+            {/* Logo */}
+            <div style={{ width: 270, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
               <Logo size="lg" showSubtitle={true} />
             </div>
 
-            {/* Attractive Loading Section with Counter */}
-            <div className="w-[270px] space-y-2">
-              <div className="w-full h-2 bg-[#F4A7B9]/40 rounded-full overflow-hidden relative shadow-inner border border-[#F4A7B9]/30 p-0.5">
+            {/* Progress Bar + Counter */}
+            <div style={{ width: 270 }}>
+              {/* Track */}
+              <div style={{
+                width: '100%',
+                height: 8,
+                background: 'rgba(244,167,185,0.35)',
+                borderRadius: 999,
+                overflow: 'hidden',
+                border: '1px solid rgba(244,167,185,0.4)',
+                boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)',
+              }}>
+                {/* Fill */}
                 <motion.div
-                  initial={{ width: '0%' }}
                   animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.1, ease: 'easeOut' }}
-                  className="h-full bg-gradient-to-r from-[#F4A7B9] via-[#7A3B4E] to-[#5E2C3B] rounded-full shadow-[0_0_14px_rgba(122,59,78,0.7)]"
+                  transition={{ duration: 0.05, ease: 'linear' }}
+                  style={{
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #F4A7B9, #7A3B4E, #5E2C3B)',
+                    borderRadius: 999,
+                    boxShadow: '0 0 16px rgba(122,59,78,0.7)',
+                  }}
                 />
               </div>
 
-              <div className="flex justify-between items-center text-[10px] uppercase font-bold text-[#7A3B4E] px-1 tracking-wider">
-                <span>Loading Collections</span>
-                <span className="font-mono">{progress}%</span>
+              {/* Labels */}
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: 8,
+                padding: '0 2px',
+              }}>
+                <span style={{
+                  fontSize: 10,
+                  fontWeight: 700,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.15em',
+                  color: done ? '#5E2C3B' : '#7A3B4E',
+                }}>
+                  {done ? 'Collection Ready' : 'Loading Collections'}
+                </span>
+                <span style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  fontFamily: 'monospace',
+                  color: '#7A3B4E',
+                }}>
+                  {progress}%
+                </span>
               </div>
             </div>
 
-            {/* Subtitle Tagline */}
+            {/* Tagline */}
             <motion.span
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#7A3B4E]/80 text-center"
+              transition={{ delay: 0.25 }}
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: '0.3em',
+                color: 'rgba(122,59,78,0.75)',
+              }}
             >
-              Handmade Royal Jewelry & Artisan Bags
+              Handmade Royal Jewelry &amp; Artisan Bags
             </motion.span>
           </motion.div>
         </motion.div>
