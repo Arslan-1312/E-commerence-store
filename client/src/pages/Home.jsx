@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValue, useInView } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Star, Crown } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { useShop } from '../context/ShopContext';
@@ -47,39 +47,15 @@ const tagItem = {
 };
 
 // 3D Tilt card wrapper
-const TiltCard = ({ children, className = '' }) => {
-  const ref = useRef(null);
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-  const springX = useSpring(rotateX, { stiffness: 200, damping: 20 });
-  const springY = useSpring(rotateY, { stiffness: 200, damping: 20 });
-
-  const handleMouseMove = (e) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = (e.clientX - cx) / (rect.width / 2);
-    const dy = (e.clientY - cy) / (rect.height / 2);
-    rotateX.set(-dy * 10);
-    rotateY.set(dx * 10);
-  };
-
-  const handleMouseLeave = () => {
-    rotateX.set(0);
-    rotateY.set(0);
-  };
-
+// Simplified card — no tilt to prevent stacking context issues
+const TiltCard = ({ children, className = '', style }) => {
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ rotateX: springX, rotateY: springY, transformStyle: 'preserve-3d', perspective: 1000 }}
+    <div
       className={className}
+      style={style}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
@@ -255,12 +231,15 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
   const [slideIndex, setSlideIndex] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  const goToSlide = (nextIndex) => {
-    setDirection(nextIndex > slideIndex ? 1 : -1);
-    setSlideIndex(nextIndex);
+  // Use functional updaters to avoid stale closure issues
+  const nextSlide = () => {
+    setDirection(1);
+    setSlideIndex(prev => (prev + 1) % HERO_SLIDES.length);
   };
-  const nextSlide = () => goToSlide((slideIndex + 1) % HERO_SLIDES.length);
-  const prevSlide = () => goToSlide((slideIndex - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  const prevSlide = () => {
+    setDirection(-1);
+    setSlideIndex(prev => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+  };
 
   // Clamp index if products change
   useEffect(() => {
@@ -269,9 +248,12 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
 
   // Auto-advance every 5 seconds
   useEffect(() => {
-    const interval = setInterval(nextSlide, 5000);
+    const interval = setInterval(() => {
+      setDirection(1);
+      setSlideIndex(prev => (prev + 1) % HERO_SLIDES.length);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [slideIndex, HERO_SLIDES.length]);
+  }, [HERO_SLIDES.length]);
 
   const currentSlide = HERO_SLIDES[Math.min(slideIndex, HERO_SLIDES.length - 1)];
 
@@ -422,11 +404,10 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
 
           {/* ── Right: 3D Hero Slideshow ── */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85, rotateY: 20, x: 60 }}
-            animate={{ opacity: 1, scale: 1, rotateY: 0, x: 0 }}
+            initial={{ opacity: 0, scale: 0.85, x: 60 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-5 relative"
-            style={{ transformStyle: 'preserve-3d', perspective: '1000px' }}
           >
             <TiltCard className="relative aspect-[4/5] rounded-[2rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white bg-[#FDF9F6]"
               style={{ boxShadow: '0 40px 80px -20px rgba(122,59,78,0.35), 0 0 0 1px rgba(244,167,185,0.2), inset 0 1px 0 rgba(255,255,255,0.9)' }}
@@ -500,26 +481,24 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
               </AnimatePresence>
             </TiltCard>
 
-            {/* ── PREV / NEXT ARROWS — Outside TiltCard so overflow-hidden doesn't clip them ── */}
-            <motion.button
-              whileHover={{ scale: 1.12, x: -3, boxShadow: '0 8px 24px rgba(122,59,78,0.4)' }}
-              whileTap={{ scale: 0.93 }}
-              onClick={prevSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 z-30 w-11 h-11 bg-white hover:bg-[#F4A7B9] rounded-full flex items-center justify-center shadow-xl text-[#7A3B4E] hover:text-white transition-all duration-200 border border-[#F4A7B9]/40"
-              style={{ boxShadow: '0 4px 20px rgba(122,59,78,0.25)' }}
+            {/* ── PREV / NEXT ARROWS — Positioned inside bounds, always clickable ── */}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); prevSlide(); }}
+              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-11 sm:h-11 bg-white/95 hover:bg-[#F4A7B9] rounded-full flex items-center justify-center shadow-2xl text-[#7A3B4E] hover:text-white transition-all duration-200 border border-[#F4A7B9]/40 cursor-pointer active:scale-90"
+              aria-label="Previous slide"
             >
-              <ArrowLeft className="w-5 h-5" />
-            </motion.button>
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none" />
+            </button>
 
-            <motion.button
-              whileHover={{ scale: 1.12, x: 3, boxShadow: '0 8px 24px rgba(122,59,78,0.4)' }}
-              whileTap={{ scale: 0.93 }}
-              onClick={nextSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-30 w-11 h-11 bg-white hover:bg-[#7A3B4E] rounded-full flex items-center justify-center shadow-xl text-[#7A3B4E] hover:text-white transition-all duration-200 border border-[#7A3B4E]/20"
-              style={{ boxShadow: '0 4px 20px rgba(122,59,78,0.25)' }}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); nextSlide(); }}
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-40 w-10 h-10 sm:w-11 sm:h-11 bg-white/95 hover:bg-[#7A3B4E] rounded-full flex items-center justify-center shadow-2xl text-[#7A3B4E] hover:text-white transition-all duration-200 border border-[#7A3B4E]/20 cursor-pointer active:scale-90"
+              aria-label="Next slide"
             >
-              <ArrowRight className="w-5 h-5" />
-            </motion.button>
+              <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 pointer-events-none" />
+            </button>
 
             {/* Slide counter */}
             <div className="absolute -bottom-6 right-4 text-xs font-mono font-bold text-[#7A3B4E]/60">

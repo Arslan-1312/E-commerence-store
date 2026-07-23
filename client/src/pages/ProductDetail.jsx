@@ -12,7 +12,20 @@ export const ProductDetail = ({ product, onBack, onSelectProduct }) => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('details');
 
-  if (!product) return null;
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center space-y-4">
+        <h2 className="font-serif text-2xl font-bold text-[#7A3B4E]">Collection Piece</h2>
+        <p className="text-sm text-gray-600 max-w-md mx-auto">Discover our handcrafted royal Kundan jewelry and Zardozi velvet bags catalog.</p>
+        <button
+          onClick={onBack}
+          className="px-6 py-3 bg-[#7A3B4E] text-white text-xs font-bold uppercase tracking-wider rounded-2xl hover:bg-[#5E2C3B] transition-colors shadow-md"
+        >
+          Browse All Collections
+        </button>
+      </div>
+    );
+  }
 
   const isWishlisted = wishlist.some(item => item._id === product._id || item.slug === product.slug);
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
