@@ -46,12 +46,19 @@ const defaultContextValue = {
 };
 
 export const ShopProvider = ({ children }) => {
+  // Sort products newest-first: admin-added products have bwc-{timestamp} _id so they naturally sort first
+  const sortNewest = (arr) => [...arr].sort((a, b) => {
+    const tsA = a.createdAt ? new Date(a.createdAt).getTime() : (a._id?.startsWith('bwc-') ? Number(a._id.slice(4)) : 0);
+    const tsB = b.createdAt ? new Date(b.createdAt).getTime() : (b._id?.startsWith('bwc-') ? Number(b._id.slice(4)) : 0);
+    return tsB - tsA;
+  });
+
   const [products, setProducts] = useState(() => {
     try {
       const saved = localStorage.getItem('bwc_products');
-      return saved ? JSON.parse(saved) : initialProductsData;
+      return saved ? sortNewest(JSON.parse(saved)) : sortNewest(initialProductsData);
     } catch (e) {
-      return initialProductsData;
+      return sortNewest(initialProductsData);
     }
   });
 
@@ -118,7 +125,7 @@ export const ShopProvider = ({ children }) => {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
-          setProducts(data);
+          setProducts(sortNewest(data));
         }
       }
     } catch (err) {
@@ -134,14 +141,18 @@ export const ShopProvider = ({ children }) => {
 
   // Admin CRUD helper functions
   const addProductLocally = (newProd) => {
+    const now = new Date().toISOString();
     const item = {
       _id: 'bwc-' + Date.now(),
       slug: newProd.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       rating: 5.0,
       numReviews: 1,
+      createdAt: now,
+      isFeatured: true,
+      isNewArrival: true,
       ...newProd
     };
-    setProducts(prev => [item, ...prev]);
+    setProducts(prev => sortNewest([item, ...prev]));
     showToast(`Added product "${newProd.title}" successfully!`);
     return item;
   };

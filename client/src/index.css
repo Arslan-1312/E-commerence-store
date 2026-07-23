@@ -3,6 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── 3D Root Perspective ── */
+#root {
+  perspective: 1500px;
+  perspective-origin: 50% 30%;
+}
+
 @layer base {
   *, *::before, *::after {
     box-sizing: border-box;
@@ -197,4 +203,137 @@
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* ─────────────────────────────────── */
+/* ──     3D DEPTH & ANIMATION        ── */
+/* ─────────────────────────────────── */
+
+/* 3D preserve-3d utility */
+.preserve-3d { transform-style: preserve-3d; }
+.perspective-800 { perspective: 800px; }
+.perspective-1200 { perspective: 1200px; }
+
+/* ── 3D Card Depth Shadow ── */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+}
+.card-3d:hover {
+  box-shadow:
+    0 30px 60px -15px rgba(122, 59, 78, 0.35),
+    0 0 0 1px rgba(244, 167, 185, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* ── 3D Glassmorphism Premium ── */
+.glass-3d {
+  background: rgba(253, 249, 246, 0.7);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(244, 167, 185, 0.3);
+  box-shadow:
+    0 8px 32px rgba(122, 59, 78, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(122, 59, 78, 0.05);
+}
+
+.glass-3d-dark {
+  background: rgba(28, 28, 30, 0.75);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(244, 167, 185, 0.18);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ── Floating Keyframes ── */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px) rotateZ(0deg); }
+  33% { transform: translateY(-14px) rotateZ(1.5deg); }
+  66% { transform: translateY(-7px) rotateZ(-1deg); }
+}
+
+@keyframes float-x {
+  0%, 100% { transform: translateX(0px); }
+  50% { transform: translateX(10px); }
+}
+
+@keyframes depth-pulse {
+  0%, 100% {
+    box-shadow: 0 8px 30px -8px rgba(122,59,78,0.2), 0 0 0 0 rgba(244,167,185,0);
+  }
+  50% {
+    box-shadow: 0 20px 60px -10px rgba(122,59,78,0.35), 0 0 0 6px rgba(244,167,185,0.08);
+  }
+}
+
+.float-anim { animation: float-y 7s ease-in-out infinite; }
+.float-anim-slow { animation: float-y 10s ease-in-out infinite; }
+.depth-pulse { animation: depth-pulse 4s ease-in-out infinite; }
+
+/* ── 3D Hero Slide Frame ── */
+.hero-3d-frame {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 40px 80px -20px rgba(122, 59, 78, 0.4),
+    0 0 0 1px rgba(244, 167, 185, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ── Glare Sweep Animation ── */
+@keyframes glare-sweep {
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(250%) skewX(-20deg); }
+}
+
+.glare-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.25) 50%, transparent 100%);
+  animation: glare-sweep 3s ease-in-out infinite 1s;
+  pointer-events: none;
+}
+
+/* ── 3D Isometric Grid background ── */
+.iso-grid {
+  background-image:
+    linear-gradient(rgba(122,59,78,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(122,59,78,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ── Depth divider ── */
+.depth-divider {
+  position: relative;
+}
+.depth-divider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -1px;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(122,59,78,0.2) 30%, rgba(244,167,185,0.4) 50%, rgba(122,59,78,0.2) 70%, transparent);
+}
+
+/* ── Premium button 3D press ── */
+.btn-3d {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transform: translateY(0) translateZ(0);
+  box-shadow: 0 4px 0 rgba(94,44,59,0.8), 0 6px 20px rgba(122,59,78,0.3);
+}
+.btn-3d:hover {
+  transform: translateY(-2px) translateZ(4px);
+  box-shadow: 0 6px 0 rgba(94,44,59,0.8), 0 12px 30px rgba(122,59,78,0.4);
+}
+.btn-3d:active {
+  transform: translateY(2px) translateZ(-2px);
+  box-shadow: 0 2px 0 rgba(94,44,59,0.8), 0 4px 10px rgba(122,59,78,0.2);
 }

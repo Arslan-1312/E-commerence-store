@@ -34,7 +34,7 @@ export const Shop = ({ initialCategory = 'All', onSelectProduct }) => {
 
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [selectedSubcategory, setSelectedSubcategory] = useState('All');
-  const [sortBy, setSortBy] = useState('featured');
+  const [sortBy, setSortBy] = useState('newest');
   const [priceRange, setPriceRange] = useState([0, 500]);
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -71,7 +71,11 @@ export const Shop = ({ initialCategory = 'All', onSelectProduct }) => {
       case 'price_asc': return filtered.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
       case 'price_desc': return filtered.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
       case 'rating': return filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-      case 'newest': return filtered.sort((a, b) => (b.isNewArrival ? 1 : 0) - (a.isNewArrival ? 1 : 0));
+      case 'newest': return filtered.sort((a, b) => {
+        const tsA = a.createdAt ? new Date(a.createdAt).getTime() : (a._id?.startsWith('bwc-') ? Number(a._id.slice(4)) : 0);
+        const tsB = b.createdAt ? new Date(b.createdAt).getTime() : (b._id?.startsWith('bwc-') ? Number(b._id.slice(4)) : 0);
+        return tsB - tsA;
+      });
       default: return filtered.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
     }
   }, [products, selectedCategory, selectedSubcategory, searchTerm, priceRange, sortBy]);
@@ -262,9 +266,15 @@ export const Shop = ({ initialCategory = 'All', onSelectProduct }) => {
               ? 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-4'
               : 'grid-cols-1 sm:grid-cols-2'
           }`}
+          style={{ perspective: '800px' }}
         >
-          {results.map((product) => (
-            <motion.div key={product._id || product.slug} variants={cardVariant}>
+          {results.map((product, i) => (
+            <motion.div
+              key={product._id || product.slug}
+              variants={cardVariant}
+              style={{ transformStyle: 'preserve-3d' }}
+              whileHover={{ z: 20 }}
+            >
               <ProductCard product={product} onSelect={onSelectProduct} />
             </motion.div>
           ))}
