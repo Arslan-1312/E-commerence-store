@@ -182,10 +182,10 @@ export const WelcomeScreen = () => {
                 />
               </div>
 
-              {/* Labels */}
+              {/* Label */}
               <div style={{
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'center',
                 alignItems: 'center',
                 marginTop: 8,
                 padding: '0 2px',
@@ -196,16 +196,9 @@ export const WelcomeScreen = () => {
                   textTransform: 'uppercase',
                   letterSpacing: '0.15em',
                   color: done ? '#5E2C3B' : '#7A3B4E',
+                  textAlign: 'center',
                 }}>
                   {done ? 'Collection Ready' : 'Loading Collections'}
-                </span>
-                <span style={{
-                  fontSize: 11,
-                  fontWeight: 800,
-                  fontFamily: 'monospace',
-                  color: '#7A3B4E',
-                }}>
-                  {progress}%
                 </span>
               </div>
             </div>

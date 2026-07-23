@@ -1,12 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
+import { Heart, Eye, ShoppingBag, Star, Check } from 'lucide-react';
 import { useShop } from '../context/ShopContext';
 
 export const ProductCard = ({ product, onSelect }) => {
   const { addToCart, toggleWishlist, wishlist, setQuickViewProduct, formatPrice } = useShop();
   const [isHovered, setIsHovered] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
   const cardRef = useRef(null);
+
+  const handleAddToCart = (e) => {
+    e.stopPropagation();
+    addToCart(product);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1500);
+  };
 
   // 3D tilt on mouse move
   const rotateX = useMotionValue(0);
@@ -183,13 +191,26 @@ export const ProductCard = ({ product, onSelect }) => {
           </div>
 
           <motion.button
-            whileHover={{ scale: 1.08, y: -2, boxShadow: '0 12px 24px -4px rgba(122,59,78,0.45)' }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => addToCart(product)}
-            className="px-3.5 sm:px-4 py-2.5 rounded-2xl bg-[#7A3B4E] text-white hover:bg-[#5E2C3B] transition-all duration-300 flex items-center gap-1.5 text-xs font-bold flex-shrink-0"
+            whileHover={{ scale: 1.06, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            onClick={handleAddToCart}
+            className={`px-3.5 sm:px-4 py-2.5 rounded-2xl text-xs font-bold flex-shrink-0 flex items-center gap-1.5 transition-all duration-300 shadow-md ${
+              isAdded
+                ? 'bg-emerald-600 text-white'
+                : 'bg-[#7A3B4E] text-white hover:bg-[#5E2C3B]'
+            }`}
           >
-            <ShoppingBag className="w-3.5 h-3.5 text-[#F4A7B9]" />
-            <span>Add</span>
+            {isAdded ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                <span>Added</span>
+              </>
+            ) : (
+              <>
+                <ShoppingBag className="w-3.5 h-3.5 text-[#F4A7B9]" />
+                <span>Add</span>
+              </>
+            )}
           </motion.button>
         </div>
       </div>

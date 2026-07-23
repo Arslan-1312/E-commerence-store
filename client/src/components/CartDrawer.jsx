@@ -25,6 +25,18 @@ export const CartDrawer = ({ onCheckoutClick }) => {
   const [couponError, setCouponError] = useState('');
   const [validatingCoupon, setValidatingCoupon] = useState(false);
 
+  // Lock body scroll when drawer is open
+  React.useEffect(() => {
+    if (isCartOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isCartOpen]);
+
   const freeShippingThresholdUSD = 150;
   const progressPercent = Math.min(100, (cartTotalUSD / freeShippingThresholdUSD) * 100);
   const remainingUSD = Math.max(0, freeShippingThresholdUSD - cartTotalUSD);
@@ -107,16 +119,16 @@ export const CartDrawer = ({ onCheckoutClick }) => {
           />
 
           {/* Drawer Container */}
-          <div className="absolute inset-y-0 right-0 max-w-full flex pl-4 sm:pl-10">
+          <div className="absolute inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10 w-full sm:w-auto">
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="w-screen max-w-md bg-[#FDF9F6] shadow-2xl flex flex-col justify-between"
+              className="w-full sm:w-screen max-w-md bg-[#FDF9F6] shadow-2xl flex flex-col justify-between h-full"
             >
               {/* Drawer Header */}
-              <div className="p-4 sm:p-6 bg-white border-b border-[#7A3B4E]/10 flex items-center justify-between">
+              <div className="p-4 sm:p-6 bg-white border-b border-[#7A3B4E]/10 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#F4A7B9]/30 flex items-center justify-center text-[#7A3B4E]">
                     <ShoppingBag className="w-5 h-5" />
@@ -135,7 +147,7 @@ export const CartDrawer = ({ onCheckoutClick }) => {
               </div>
 
               {/* Free Express Delivery Progress Indicator */}
-              <div className="bg-[#7A3B4E]/5 px-4 sm:px-6 py-3 border-b border-[#7A3B4E]/10">
+              <div className="bg-[#7A3B4E]/5 px-4 sm:px-6 py-3 border-b border-[#7A3B4E]/10 flex-shrink-0">
                 <div className="flex justify-between text-xs font-medium mb-1">
                   <span className="truncate pr-2">
                     {remainingUSD === 0
@@ -152,8 +164,8 @@ export const CartDrawer = ({ onCheckoutClick }) => {
                 </div>
               </div>
 
-              {/* Cart Items List */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+              {/* Cart Items List — only scroll when items exceed view, no unnecessary scrollbar */}
+              <div className={`flex-1 p-4 sm:p-6 space-y-4 ${cart.length === 0 ? 'flex items-center justify-center overflow-hidden' : 'overflow-y-auto'}`}>
                 {cart.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center text-[#8E8E93]">
                     <ShoppingBag className="w-16 h-16 text-[#F4A7B9] mb-4 stroke-1" />

@@ -717,10 +717,17 @@ export const Home = ({ setActiveTab, onSelectProduct }) => {
               </div>
               <div className="lg:col-span-5 flex justify-start lg:justify-end">
                 <motion.button
-                  whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={() => setActiveTab('limited')}
-                  className="px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-[#F4A7B9] text-[#7A3B4E] font-serif font-bold text-xs uppercase tracking-widest shadow-xl hover:bg-white transition-all duration-300 flex items-center gap-3"
+                  whileHover={{ scale: 1.06, y: -3, boxShadow: '0 16px 32px rgba(0,0,0,0.35)' }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => {
+                    const potliProduct = products.find(p => p.sku === 'BWC-BAG-001' || p.title.toLowerCase().includes('potli'));
+                    if (potliProduct && onSelectProduct) {
+                      onSelectProduct(potliProduct);
+                    } else {
+                      setActiveTab('bags');
+                    }
+                  }}
+                  className="w-full sm:w-auto justify-center px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl bg-[#F4A7B9] text-[#7A3B4E] font-serif font-bold text-xs uppercase tracking-widest shadow-xl hover:bg-white transition-all duration-300 flex items-center gap-3 cursor-pointer"
                 >
                   <span>Reserve Limited Piece</span>
                   <ArrowRight className="w-4 h-4" />
